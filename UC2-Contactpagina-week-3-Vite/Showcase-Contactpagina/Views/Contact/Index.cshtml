@@ -5,26 +5,24 @@
 
 <div class="page">
     <section class="contact">
-
         <h1>Contact</h1>
         <p>@ViewBag.Message</p>
-        <form method="post" class="form-contactpagina">
-
+        <form method="POST" class="form-contactpagina" action="https://localhost:7070/api/Mail">
             <div class="form-contactpagina__inputelement fx-col">
                 <label for="firstname">Voornaam: </label>
                 <input type="text" asp-for="FirstName" name="firstname" id="firstname" required>
             </div>
-
+            
             <div class="form-contactpagina__inputelement fx-col">
                 <label for="lastname">Achternaam: </label>
                 <input type="text" asp-for="LastName" name="lastname" id="lastname" required>
             </div>
-
+            
             <div class="form-contactpagina__inputelement fx-col">
                 <label for="email">E-mailadres: </label>
                 <input type="email" asp-for="Email" name="email" id="email">
             </div>
-
+            
             <div class="form-contactpagina__inputelement fx-col">
                 <label for="phone">Telefoonnummer: </label>
                 <input type="tel" asp-for="Phone" name="phone" id="phone">
@@ -33,16 +31,13 @@
             <div class="form-contactpagina__inputelement">
                 <input type="submit" value="Verstuur!">
             </div>
-
         </form>
-
     </section>
 </div>
 
-
 <script>
-//    const inputEmail = document.getElementById('email');
 
+//    const inputEmail = document.getElementById('email');
 
 //    const validateEmail = () => { 
 //        if (inputEmail.validity.typeMismatch) {
@@ -111,6 +106,7 @@
 //                // Verwerk fouten hier
 //            });
 //    });
+
 
 
 
