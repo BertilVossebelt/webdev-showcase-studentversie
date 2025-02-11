@@ -8,7 +8,6 @@
 
 .personalia {
     background-color: #e7e8ec;
-    width: 30%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -19,10 +18,28 @@
     width: 100%;
 }
 
+.personalia {
+    padding-bottom: 5px;
+}
+
 .person-logo {
     margin-top: 8%;
-    width: 50%;
+    width: 35%;
     animation: glow 3s ease alternate;
+    border-radius: 180px;
+}
+
+.person-title {
+    margin-top: -10px;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.skills-title {
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .profile-content {
@@ -77,15 +94,25 @@
 }
 
 @media only screen and (min-width: 800px) {
-
+    
     .page {
         flex-direction: row;
     }
 
+    .personalia {
+        width: 30%;
+    }
+    
     .person-name {
-        font-size: 30px;
-        padding: 10px;
-        order: 1;
+        font-size: 20px;
+        margin-top: 10px;
+    }
+
+    .person-logo {
+        margin-top: 8%;
+        width: 55%;
+        animation: glow 3s ease alternate;
+        border-radius: 90px;
     }
 
     .profile-content__category--hidden-mobile {
