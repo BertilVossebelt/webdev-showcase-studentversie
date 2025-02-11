@@ -74,4 +74,3 @@ class GDPR {
 }
 
 const gdpr = new GDPR();
-

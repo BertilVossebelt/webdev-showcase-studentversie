@@ -8,7 +8,7 @@
 
 .personalia {
     background-color: #e7e8ec;
-    width: 100%;
+    width: 30%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -20,10 +20,8 @@
 }
 
 .person-logo {
-    border: 4px solid black;
-    border-radius: 50%;
-    margin: 15px 0px 15px 0px;
-    width: 20%;
+    margin-top: 8%;
+    width: 50%;
     animation: glow 3s ease alternate;
 }
 
@@ -43,6 +41,7 @@
 .profile-content__element {
     display: flex;
     flex-direction: column;
+    margin-bottom: 15px;
 }
 
 .profile-content__element--hidden-mobile {
@@ -64,7 +63,16 @@
 
 .profile-content__institute {
     color: rgba(39, 140, 39, 0.96);
-    margin-top: 0px;
+    margin: 0;
+    font-size: 14px;
+}
+
+.profile-content__introduction {
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.profile-content__description {
     font-size: 14px;
 }
 
@@ -75,7 +83,9 @@
     }
 
     .person-name {
-        order: -1;
+        font-size: 30px;
+        padding: 10px;
+        order: 1;
     }
 
     .profile-content__category--hidden-mobile {
