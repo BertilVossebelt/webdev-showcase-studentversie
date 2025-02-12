@@ -5,24 +5,25 @@
 
 <div class="page">
     <section class="contact">
+
         <h1>Contact</h1>
-        <p>@ViewBag.Message</p>
-        <form method="POST" class="form-contactpagina" action="https://localhost:7070/api/Mail">
+        <p id="FlashMessage"></p>
+        <form method="post" class="form-contactpagina">
             <div class="form-contactpagina__inputelement fx-col">
                 <label for="firstname">Voornaam: </label>
                 <input type="text" asp-for="FirstName" name="firstname" id="firstname" required>
             </div>
-            
+
             <div class="form-contactpagina__inputelement fx-col">
                 <label for="lastname">Achternaam: </label>
                 <input type="text" asp-for="LastName" name="lastname" id="lastname" required>
             </div>
-            
+
             <div class="form-contactpagina__inputelement fx-col">
                 <label for="email">E-mailadres: </label>
                 <input type="email" asp-for="Email" name="email" id="email">
             </div>
-            
+
             <div class="form-contactpagina__inputelement fx-col">
                 <label for="phone">Telefoonnummer: </label>
                 <input type="tel" asp-for="Phone" name="phone" id="phone">
@@ -31,83 +32,94 @@
             <div class="form-contactpagina__inputelement">
                 <input type="submit" value="Verstuur!">
             </div>
+
         </form>
+
     </section>
 </div>
 
 <script>
+    const inputEmail = document.getElementById('email');
+    const inputPhone = document.getElementById('phone');
 
-//    const inputEmail = document.getElementById('email');
+    const validateEmail = () => {
+        if (inputEmail.validity.typeMismatch) {
+            inputEmail.setCustomValidity("Voer een geldig e-mailadres in!");
+            inputEmail.reportValidity();
+        } else if (inputEmail.value.length > 80) {
+            inputEmail.setCustomValidity("Email mag niet langer dan 80 tekens zijn!");
+        } else {
+            inputEmail.setCustomValidity("");
+        }
+    }
+    
+    const validatePhone = () => {
+        console.log(inputPhone.value);
+        console.log(isNaN(inputPhone.value));
+        if (isNaN(inputPhone.value)) {
+            inputPhone.setCustomValidity("Voer een geldig telefoonnummer in! Alleen cijfers toegestaan.");
+            inputPhone.reportValidity();
+        } else if (inputPhone.value.length > 10) {
+            inputPhone.setCustomValidity("telefoonnummer mag niet langer dan 10 cijfers zijn!"); // Er vanuit gaande dat mensen een Nederlands telefoonnummer invoeren zonder landcode.
+        } else if (inputPhone.value.length > 0 && inputPhone.value.length < 3) {
+            inputPhone.setCustomValidity("telefoonnummer mag niet korter dan 3 cijfers zijn!"); // Er vanuit gaande dat mensen een Nederlands telefoonnummer invoeren.
+        } else {
+            inputPhone.setCustomValidity("");
+        }
+    }
 
-//    const validateEmail = () => { 
-//        if (inputEmail.validity.typeMismatch) {
-//            inputEmail.setCustomValidity("Voer een geldig e-mailadres in!");
-//            inputEmail.reportValidity();
-//        } else if (inputEmail.value.length > 80) {
-//            inputEmail.setCustomValidity("Email moet niet langer dan 80 tekens zijn!");
-//        } else {
-//            inputEmail.setCustomValidity("");
-//        }
-//    }
+    const validateForm = () => {
+        validateEmail();
+    }
 
-//    const validateForm = () => {
-//        validateEmail();
-//    }
+    // Event listener voor email
+    // Aanbevolen events voor formulieren: https://github.com/Windesheim-HBO-ICT/client_studenten/blob/main/lessen/week-2/les-1/form-constraint-validation-api/studentversie/events-voor-invoer-validatie.md
+    inputEmail.addEventListener("blur", validateEmail);
 
-//    // Event listener voor email
-//    // Aanbevolen events voor formulieren: https://github.com/Windesheim-HBO-ICT/client_studenten/blob/main/lessen/week-2/les-1/form-constraint-validation-api/studentversie/events-voor-invoer-validatie.md
-//    inputEmail.addEventListener("blur", validateEmail);
-//    inputEmail.addEventListener("input", validateEmail);
+    // Event listener voor phone
+    inputPhone.addEventListener("blur", validatePhone);
+    inputPhone.addEventListener("input", validatePhone);
 
-//    // Selecteer het formelement
-//    const form = document.querySelector('.form-contactpagina');
+    const form = document.querySelector('.form-contactpagina');
 
-//    // Event listener voor formulierinzending
-//    form.addEventListener('submit', function (event) {
-//        event.preventDefault(); // Voorkom standaard formulierinzending
+    // Event listener voor formulierinzending
+    form.addEventListener('submit', function (event) {
+        event.preventDefault(); // Voorkom standaard formulierinzending
 
-//       // Valideer alle velden voor de zekerheid
-//        validateForm();
+       // Valideer alle velden voor de zekerheid
+        validateForm();
 
-//        // Verkrijg CSRF-token van het formulier
-//        const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        // Verkrijg CSRF-token van het formulier
+        const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
-//        // Serialiseer formuliergegevens
-//        const formData = new URLSearchParams();
+        // Serialiseer formuliergegevens
+        const formData = new URLSearchParams();
+        formData.append('firstname', form.firstname.value);
+        formData.append('lastname', form.lastname.value);
+        formData.append('email', form.email.value);
+        formData.append('phone', form.phone.value);
+        formData.append('__RequestVerificationToken', csrfToken); // Voeg CSRF-token toe
 
-//        formData.append('email', form.email.value);
-        
-//        formData.append('__RequestVerificationToken', csrfToken); // Voeg CSRF-token toe
-
-//        // Voer een POST-verzoek uit
-//        fetch('/contact', {
-//            method: 'POST',
-//            headers: {
-//                'Content-Type': 'application/x-www-form-urlencoded' // Stel de inhoudstype in
-//            },
-//            body: formData // Stuur de geserialiseerde formuliergegevens als de body
-//        })
-//            .then(response => {
-//                if (!response.ok) {
-//                    throw new Error('Netwerkrespons was niet ok');
-//                }
-//                return response.text();
-//            })
-//            .then(data => {
-//                // Verwerk succesvolle formulierinzending
-//                console.log('Formulier succesvol ingediend:', data);
-//                // Optioneel: je kunt hier een redirect uitvoeren of een succesbericht tonen
-//            })
-//            .catch(error => {
-//                console.error('Er was een probleem met de formulierinzending:', error);
-
-//                alert(error.message)
-
-//                // Verwerk fouten hier
-//            });
-//    });
-
-
-
-
+        console.log("formData:");
+        console.log(formData);
+        // Voer een POST-verzoek uit
+        fetch('/contact', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded' // Stel de inhoudstype in
+            },
+            body: formData // Stuur de geserialiseerde formuliergegevens als de body
+        }).then(response => {
+             if (!response.ok) throw new Error('Netwerkrespons was niet OK.');
+             return response.text();
+         }).then(data => {
+             // Verwerk succesvolle formulierinzending
+             console.log('Formulier succesvol ingediend:', data);
+             form.reset();
+            document.getElementById('FlashMessage').innerText = "Het verzoek is verstuurd! Ik neem zo snel mogelijk contact met je op.";
+         }).catch(error => {
+             console.error('Er was een probleem met de formulierinzending:', error);
+             alert(error.message)
+         });
+    });
 </script>

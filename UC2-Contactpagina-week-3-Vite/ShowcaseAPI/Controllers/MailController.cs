@@ -13,8 +13,9 @@ namespace ShowcaseAPI.Controllers
     {
         // POST api/Mail  [Bind("FirstName, LastName, Email, Phone")]
         [HttpPost]
-        public ActionResult Post([FromForm] Contactform form)
+        public ActionResult Post([Bind("FirstName, LastName, Email, Phone")] Contactform form)
         {
+            Console.WriteLine("Received contact request");
             var body = $"Naam: {form.FirstName} {form.LastName}\nEmail: {form.Email}\nTelefoonnummer: {form.Phone}\n";
             
             var client = new SmtpClient("sandbox.smtp.mailtrap.io", 2525)
@@ -24,7 +25,7 @@ namespace ShowcaseAPI.Controllers
             };
             client.Send(form.Email, "myemail@example.com", "Contactverzoek", body);
 
-            return Redirect("https://localhost:6060/Contact?mail=success");
+            return Ok();
         }
 
         [HttpGet]
