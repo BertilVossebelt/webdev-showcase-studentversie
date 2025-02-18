@@ -13,7 +13,8 @@
 <div class="page">
     <section class="contact">
         <h1>Contact</h1>
-        <p id="FlashMessage"></p>
+        <div id="SuccessMessage" class="alert alert-success hide" role="alert" onclick="hideSuccessMessage()"></div>
+        <div id="ErrorMessage" class="alert alert-danger hide" role="alert" onclick="hideErrorMessage()"></div>
         <form method="post" class="form-contactpagina">
             <div class="form-contactpagina__inputelement fx-col">
                 <label for="firstname">Voornaam: </label>
@@ -34,7 +35,7 @@
                 <label for="phone">Telefoonnummer: </label>
                 <input type="tel" asp-for="Phone" name="phone" id="phone">
             </div>
-
+            
             <div class="form-contactpagina__inputelement">
                 <input id="SubmitButton" type="submit" value="Verstuur!" disabled>
             </div>
@@ -56,8 +57,23 @@
 
     const validateFirstName = () => {
         if (inputFirstName.value.length === 0) {
+            inputFirstName.setCustomValidity("Voornaam mag niet leeg zijn!");
             validFirstName = false;
             toggleSubmitButton();
+            inputFirstName.classList.add("invalid");
+            inputFirstName.reportValidity();
+            return;
+        }
+
+        const pattern = /^[a-zA-Z ]*$/;
+        console.log(inputFirstName.value);
+        if (!inputFirstName.value.match(pattern)) {
+            console.log("false");
+            inputFirstName.setCustomValidity("Alleen letters toegestaan!");
+            validFirstName = false;
+            toggleSubmitButton();
+            inputFirstName.classList.add("invalid");
+            inputFirstName.reportValidity();
             return;
         }
 
@@ -65,19 +81,34 @@
             inputFirstName.setCustomValidity("Voornaam mag niet langer dan 60 tekens zijn!");
             validFirstName = false;
             toggleSubmitButton();
+            inputFirstName.classList.add("invalid");
             inputFirstName.reportValidity();
             return;
         }
 
         validFirstName = true;
         toggleSubmitButton();
+        inputFirstName.classList.remove("invalid");
         inputFirstName.setCustomValidity("");
     }
 
     const validateLastName = () => {
         if (inputLastName.value.length === 0) {
+            inputLastName.setCustomValidity("Achternaam mag niet leeg zijn!");
             validLastName = false;
             toggleSubmitButton();
+            inputLastName.classList.add("invalid");
+            inputLastName.reportValidity();
+            return;
+        }
+
+        const pattern = /^[a-zA-Z ]*$/;
+        if (!inputLastName.value.match(pattern)) {
+            inputLastName.setCustomValidity("Alleen letters toegestaan!");
+            validLastName = false;
+            toggleSubmitButton();
+            inputLastName.classList.add("invalid");
+            inputLastName.reportValidity();
             return;
         }
 
@@ -85,19 +116,24 @@
             inputLastName.setCustomValidity("Achternaam mag niet langer dan 60 tekens zijn!");
             validLastName = false;
             toggleSubmitButton();
+            inputLastName.classList.add("invalid");
             inputLastName.reportValidity();
             return;
         }
-
+        
         validLastName = true;
         toggleSubmitButton();
+        inputLastName.classList.remove("invalid");
         inputLastName.setCustomValidity("");
     }
 
     const validateEmail = () => {
         if (inputEmail.value.length === 0) {
+            inputEmail.setCustomValidity("E-mailadres mag niet leeg zijn!");
             validEmail = false;
             toggleSubmitButton();
+            inputEmail.classList.add("invalid");
+            inputEmail.reportValidity();
             return;
         }
 
@@ -105,6 +141,7 @@
             inputEmail.setCustomValidity("Voer een geldig e-mailadres in!");
             validEmail = false;
             toggleSubmitButton();
+            inputEmail.classList.add("invalid");
             inputEmail.reportValidity();
             return;
         }
@@ -113,47 +150,49 @@
             inputEmail.setCustomValidity("Email mag niet langer dan 80 tekens zijn!");
             validEmail = false;
             toggleSubmitButton();
+            inputEmail.classList.add("invalid");
             inputEmail.reportValidity();
             return;
         }
 
         validEmail = true;
         toggleSubmitButton();
+        inputEmail.classList.remove("invalid");
         inputEmail.setCustomValidity("");
     }
 
     const validatePhone = () => {
         if (inputPhone.value.length === 0) {
+            inputPhone.setCustomValidity("Telefoonnummer mag niet leeg zijn!");
             validPhone = false;
             toggleSubmitButton();
-            return;
-        }
-
-        if (isNaN(inputPhone.value)) {
-            inputPhone.setCustomValidity("Voer een geldig telefoonnummer in! Alleen cijfers toegestaan.");
-            validPhone = false;
-            toggleSubmitButton();
+            inputPhone.classList.add("invalid");
             inputPhone.reportValidity();
             return;
         }
 
-        if (inputPhone.value.length > 10) {
-            inputPhone.setCustomValidity("telefoonnummer mag niet langer dan 10 cijfers zijn!"); // Er vanuit gaande dat mensen een Nederlands telefoonnummer invoeren zonder landcode.
+        const phonePattern = /^(?:0|(?:\+|00) ?31 ?)(?:(?:[1-9] ?(?:[0-9] ?){8})|(?:6 ?-? ?[1-9] ?(?:[0-9] ?){7})|(?:[1,2,3,4,5,7,8,9]\d ?-? ?[1-9] ?(?:[0-9] ?){6})|(?:[1,2,3,4,5,7,8,9]\d{2} ?-? ?[1-9] ?(?:[0-9] ?){5}))$/;
+        if (!phonePattern.test(inputPhone.value)) {
+            inputPhone.setCustomValidity("Voer een geldig telefoonnummer in!");
             validPhone = false;
             toggleSubmitButton();
+            inputPhone.classList.add("invalid");
             inputPhone.reportValidity();
             return;
         }
 
-        if (inputPhone.value.length > 0 && inputPhone.value.length < 3) {
-            inputPhone.setCustomValidity("telefoonnummer mag niet korter dan 3 cijfers zijn!"); // Er vanuit gaande dat mensen een Nederlands telefoonnummer invoeren.
+        if (inputPhone.value.length > 20) {
+            inputPhone.setCustomValidity("telefoonnummer mag niet langer dan 20 cijfers zijn!");
             validPhone = false;
             toggleSubmitButton();
+            inputPhone.classList.add("invalid");
+            inputPhone.reportValidity();
             return;
         }
 
         validPhone = true;
         toggleSubmitButton();
+        inputPhone.classList.remove("invalid");
         inputPhone.setCustomValidity("");
     }
 
@@ -173,6 +212,14 @@
         document.getElementById("SubmitButton").disabled = false;
     }
 
+    const hideSuccessMessage = () => {
+        document.getElementById('SuccessMessage').classList.add("hide");
+    }
+    
+    const hideErrorMessage = () => {
+        document.getElementById('ErrorMessage').classList.add("hide");
+    }
+
     // Event listener voor first name
     inputFirstName.addEventListener("blur", validateFirstName);
     inputFirstName.addEventListener("input", validateFirstName);
@@ -187,7 +234,6 @@
 
     // Event listener voor phone
     inputPhone.addEventListener("blur", validatePhone);
-    inputPhone.addEventListener("input", validatePhone);
 
     const form = document.querySelector('.form-contactpagina');
 
@@ -223,14 +269,16 @@
             spinner.classList.add("hide");
             if (!response.ok) throw new Error('Netwerkrespons was niet OK.');
             return response.text();
-        }).then(data => {
+        }).then(() => {
             // Verwerk succesvolle formulierinzending
             spinner.classList.add("hide");
-            console.log('Formulier succesvol ingediend:', data);
+            document.getElementById('SuccessMessage').innerText = "Het verzoek is verstuurd! Ik neem zo snel mogelijk contact met je op.";
+            document.getElementById('SuccessMessage').classList.remove("hide");
             form.reset();
-            document.getElementById('FlashMessage').innerText = "Het verzoek is verstuurd! Ik neem zo snel mogelijk contact met je op.";
         }).catch(error => {
             spinner.classList.add("hide");
+            document.getElementById('ErrorMessage').innerText = "Er was een probleem met de formulierinzending. Probeer het later nog eens.";
+            document.getElementById('ErrorMessage').classList.remove("hide");
             console.error('Er was een probleem met de formulierinzending:', error);
             alert(error.message)
         });

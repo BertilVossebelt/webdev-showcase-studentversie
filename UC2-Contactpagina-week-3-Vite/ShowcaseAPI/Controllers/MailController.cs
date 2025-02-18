@@ -2,6 +2,7 @@
 using ShowcaseAPI.Models;
 using System.Net;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,11 +12,19 @@ namespace ShowcaseAPI.Controllers
     [ApiController]
     public class MailController : ControllerBase
     {
-        // POST api/Mail  [Bind("FirstName, LastName, Email, Phone")]
+        // POST api/Mail
         [HttpPost]
         public ActionResult Post([Bind("FirstName, LastName, Email, Phone")] Contactform form)
         {
-            Console.WriteLine("Received contact request");
+            const string namePattern = "^[a-zA-Z ]*$"; // Only allow letters and spaces.
+            Regex nameRegex = new(namePattern);
+            
+            // Check name fields with regex, e-mail, phone and length are validated by the model.
+            if (!nameRegex.IsMatch(form.FirstName) || !nameRegex.IsMatch(form.LastName) || !ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            
             var body = $"Naam: {form.FirstName} {form.LastName}\nEmail: {form.Email}\nTelefoonnummer: {form.Phone}\n";
             
             var client = new SmtpClient("sandbox.smtp.mailtrap.io", 2525)

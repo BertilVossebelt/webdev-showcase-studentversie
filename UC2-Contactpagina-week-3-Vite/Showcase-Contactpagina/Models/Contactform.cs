@@ -13,10 +13,12 @@ namespace Showcase_Contactpagina.Models
         public string LastName {  get; set; }
 
         [Required]
+        [StringLength(80)]
         [EmailAddress]
         public string Email { get; set; }
 
         [Required]
+        [StringLength(20)]
         [Phone]
         public string Phone { get; set; }
     }
