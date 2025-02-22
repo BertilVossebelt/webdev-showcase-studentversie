@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Showcase_Contactpagina.Models;
 using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -47,16 +48,17 @@ namespace Showcase_Contactpagina.Controllers
             
             
             if (!ModelState.IsValid)
+            const string namePattern = "^[a-zA-Z ]*$"; // Only allow letters and spaces.
+            Regex nameRegex = new(namePattern);
+            
+            // Check name fields with regex, e-mail, phone and length are validated by the model.
+            if (!nameRegex.IsMatch(form.FirstName) || !nameRegex.IsMatch(form.LastName) || !ModelState.IsValid)
             {
-                ViewBag.Message = "De ingevulde velden voldoen niet aan de gestelde voorwaarden";
+                ViewBag.Message = "De ingevulde naam voldoet niet aan de gestelde voorwaarden";
                 return BadRequest();
             }
-
-            var settings = new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            };
-
+            
+            var settings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
             var json = JsonConvert.SerializeObject(form, settings);
             var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
 

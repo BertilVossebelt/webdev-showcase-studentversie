@@ -28,6 +28,11 @@
     display: none;
 }
 
+.invalid {
+    border-color: #ff6464;
+    background-color: #ffd6d6;
+}
+
 .spinner-box {
     width: 100%;
     height: 100%;
