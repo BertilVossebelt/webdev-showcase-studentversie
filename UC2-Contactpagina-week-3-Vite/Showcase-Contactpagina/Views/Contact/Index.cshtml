@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Contactpagina";
 }
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <div id="#SpinnerBox" class="spinner-box hide">
     <div class="spinner">
@@ -35,14 +36,15 @@
                 <input type="tel" asp-for="Phone" name="phone" id="phone">
             </div>
 
+            <div class="g-recaptcha" data-sitekey="6LcYW98qAAAAAAflDBqVvT0T2Viy4pX10bMWhy7f"></div>
+
             <div class="form-contactpagina__inputelement">
                 <input id="SubmitButton" type="submit" value="Verstuur!" disabled>
             </div>
         </form>
     </section>
 </div>
-
-<script>
+<script type="text/javascript">
     const inputFirstName = document.getElementById('firstname');
     const inputLastName = document.getElementById('lastname');
     const inputEmail = document.getElementById('email');
@@ -201,24 +203,29 @@
         // Valideer alle velden voor de zekerheid
         validateForm();
 
-        // Verkrijg CSRF-token van het formulier
         const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        const token = grecaptcha.getResponse();
+        console.log(token);
+        if (token.length === 0) {
+            alert("Vul de reCAPTCHA in alstublieft.");
+            return;
+        }
 
-        // Serialiseer formuliergegevens
         const formData = new URLSearchParams();
         formData.append('firstname', form.firstname.value);
         formData.append('lastname', form.lastname.value);
         formData.append('email', form.email.value);
         formData.append('phone', form.phone.value);
-        formData.append('__RequestVerificationToken', csrfToken); // Voeg CSRF-token toe
+        formData.append('__RequestVerificationToken', csrfToken);
+        formData.append('gRecaptchaResponse', token);
 
         // Voer een POST-verzoek uit
         fetch('/contact', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded' // Stel de inhoudstype in
+                'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: formData // Stuur de geserialiseerde formuliergegevens als de body
+            body: formData
         }).then(response => {
             spinner.classList.add("hide");
             if (!response.ok) throw new Error('Netwerkrespons was niet OK.');

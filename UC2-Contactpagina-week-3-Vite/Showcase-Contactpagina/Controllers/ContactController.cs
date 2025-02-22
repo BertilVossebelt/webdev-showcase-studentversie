@@ -2,6 +2,7 @@
 using Showcase_Contactpagina.Models;
 using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Showcase_Contactpagina.Controllers
@@ -27,6 +28,24 @@ namespace Showcase_Contactpagina.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Index(Contactform form)
         {
+            const string gRecaptchaSecret = "6LcYW98qAAAAAOTbh396YvCAP_wPW5Gq0Yex3bpf";
+            
+            var values = new Dictionary<string, string>
+            {
+                { "secret", gRecaptchaSecret },
+                { "response", form.gRecaptchaResponse }
+            };
+            
+            var urlEncodedContent = new FormUrlEncodedContent(values);
+            var response = await _httpClient.PostAsync("https://www.google.com/recaptcha/api/siteverify", urlEncodedContent);
+            Console.WriteLine($"reCAPTCHA response: {form.gRecaptchaResponse}");
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            bool success = (bool)JObject.Parse(jsonResponse)["success"];
+            Console.WriteLine(JObject.Parse(jsonResponse));
+            if (!success) {return BadRequest(new { message = "reCAPTCHA verification failed." });}
+            
+            
             if (!ModelState.IsValid)
             {
                 ViewBag.Message = "De ingevulde velden voldoen niet aan de gestelde voorwaarden";
@@ -39,9 +58,9 @@ namespace Showcase_Contactpagina.Controllers
             };
 
             var json = JsonConvert.SerializeObject(form, settings);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("/api/Mail", content);
+            response = await _httpClient.PostAsync("/api/Mail", stringContent);
 
             return !response.IsSuccessStatusCode ? StatusCode(StatusCodes.Status500InternalServerError) : Ok();
         }
