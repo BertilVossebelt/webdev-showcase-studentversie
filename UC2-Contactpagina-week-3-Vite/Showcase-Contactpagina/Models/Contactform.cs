@@ -21,5 +21,11 @@ namespace Showcase_Contactpagina.Models
         [StringLength(20)]
         [Phone]
         public string Phone { get; set; }
+        
+        [Required]
+        public string gRecaptchaResponse { get; set; }
+        
+        [Required]
+        public string __RequestVerificationToken { get; set; }
     }
 }

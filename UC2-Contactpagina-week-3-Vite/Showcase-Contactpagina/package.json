@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "js-captcha": "^1.3.0"
+  }
+}
